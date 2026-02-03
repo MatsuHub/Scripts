@@ -3,36 +3,72 @@ if game.PlaceId ~= 537413528 then return end
 
 local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 local MainFrame = Instance.new("Frame", ScreenGui)
+local Header = Instance.new("TextLabel", MainFrame)
 local ToggleBtn = Instance.new("TextButton", ScreenGui)
 local ActionBtn = Instance.new("TextButton", MainFrame)
 
--- Botão M (Para abrir/fechar depois)
-ToggleBtn.Size, ToggleBtn.Position = UDim2.new(0, 45, 0, 45), UDim2.new(0, 15, 0, 15)
-ToggleBtn.Text, ToggleBtn.BackgroundColor3 = "M", Color3.fromRGB(0,0,0)
-ToggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
-Instance.new("UICorner", ToggleBtn)
+local NEON_RED = Color3.fromRGB(255, 0, 0)
+local PRETO = Color3.fromRGB(0, 0, 0)
+local BRANCO = Color3.fromRGB(255, 255, 255)
 
--- Painel Principal (Ajustado para já iniciar VISÍVEL)
+-- Função para o Estilo Neon do MatsuHub
+local function applyNeon(p)
+    local s = Instance.new("UIStroke", p)
+    s.Color = NEON_RED
+    s.Thickness = 3
+    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+end
+
+-- Botão "M" Estilizado
+ToggleBtn.Size, ToggleBtn.Position = UDim2.new(0, 45, 0, 45), UDim2.new(0, 15, 0, 15)
+ToggleBtn.BackgroundColor3 = PRETO
+ToggleBtn.Text = "M"
+ToggleBtn.TextColor3 = BRANCO
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.TextSize = 20
+Instance.new("UICorner", ToggleBtn)
+applyNeon(ToggleBtn)
+
+-- Painel Principal MatsuHub
 MainFrame.Size, MainFrame.Position = UDim2.new(0, 250, 0, 310), UDim2.new(0.5, -125, 0.5, -155)
-MainFrame.BackgroundColor3 = Color3.fromRGB(0,0,0)
-MainFrame.Visible = true -- <--- AQUI O ERRO FOI CORRIGIDO
+MainFrame.BackgroundColor3 = PRETO
+MainFrame.Visible = true
 MainFrame.Active, MainFrame.Draggable = true, true
 Instance.new("UICorner", MainFrame)
+applyNeon(MainFrame)
+
+-- Cabeçalho do Menu
+Header.Size = UDim2.new(1, 0, 0, 50)
+Header.BackgroundColor3 = PRETO
+Header.Text = "MATSUHUB BUILD BOAT"
+Header.TextColor3 = BRANCO
+Header.Font = Enum.Font.GothamBold
+Header.TextSize = 15
+Instance.new("UICorner", Header)
 
 local function createBtn(t, p, f)
     local b = Instance.new("TextButton", MainFrame)
     b.Size, b.Position = UDim2.new(0.85, 0, 0, 40), p
-    b.Text, b.BackgroundColor3 = t, Color3.fromRGB(20,20,20)
-    b.TextColor3 = Color3.fromRGB(255,0,0)
+    b.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    b.Text = t
+    b.TextColor3 = BRANCO
+    b.Font = Enum.Font.GothamBold
+    b.TextSize = 11
     Instance.new("UICorner", b)
+    applyNeon(b)
     b.MouseButton1Click:Connect(f)
 end
 
--- Botão PARAR (Aparece só quando trava no baú)
+-- Botão de Parar (Redondo e Vermelho)
 ActionBtn.Size, ActionBtn.Position = UDim2.new(0.85, 0, 0, 45), UDim2.new(0.075, 0, 0.78, 0)
-ActionBtn.Text, ActionBtn.BackgroundColor3 = "PARAR DE VOAR", Color3.fromRGB(150, 0, 0)
-ActionBtn.TextColor3, ActionBtn.Visible = Color3.fromRGB(255,255,255), false
+ActionBtn.BackgroundColor3 = PRETO
+ActionBtn.Text = "PARAR DE VOAR"
+ActionBtn.TextColor3 = NEON_RED
+ActionBtn.Font = Enum.Font.GothamBold
+ActionBtn.TextSize = 12
+ActionBtn.Visible = false
 Instance.new("UICorner", ActionBtn)
+applyNeon(ActionBtn)
 
 ToggleBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
@@ -62,15 +98,15 @@ local function startFly(s)
     
     task.spawn(function()
         while flying and h.Parent do
-            -- NOCLIP ATIVO (Atravessa a parede da foto)
+            -- NOCLIP TOTAL: Atravessa a parede da cachoeira sem parar
             for _, part in pairs(char:GetDescendants()) do
                 if part:IsA("BasePart") then part.CanCollide = false end
             end
 
             local posZ = h.Position.Z
-            -- CONGELA NO BAÚ
+            -- TRAVA NO BAÚ (Final do percurso)
             if posZ >= 9480 then
-                bv.Velocity = Vector3.new(0,0,0)
+                bv.Velocity = Vector3.zero
                 ActionBtn.Visible = true
             else
                 bv.Velocity = (Vector3.new(-106, 35, posZ + 100) - h.Position).Unit * s
@@ -84,6 +120,6 @@ end
 
 ActionBtn.MouseButton1Click:Connect(cleanup)
 
-createBtn("FARM DE BARCO (200)", UDim2.new(0.075, 0, 0.20, 0), function() startFly(200) end)
-createBtn("FARM NORMAL (250)", UDim2.new(0.075, 0, 0.38, 0), function() startFly(250) end)
-createBtn("FARM TURBO (400)", UDim2.new(0.075, 0, 0.56, 0), function() startFly(400) end)
+createBtn("AUTO FARM DE BARCO", UDim2.new(0.075, 0, 0.20, 0), function() startFly(200) end)
+createBtn("AUTO FARM (NORMAL)", UDim2.new(0.075, 0, 0.38, 0), function() startFly(250) end)
+createBtn("AUTO FARM (TURBO)", UDim2.new(0.075, 0, 0.56, 0), function() startFly(400) end)

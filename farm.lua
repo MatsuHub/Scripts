@@ -18,7 +18,7 @@ local function applyNeon(p)
     s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 end
 
--- Botão de Menu (M)
+-- Botão M (Abre/Fecha)
 ToggleBtn.Parent = ScreenGui
 ToggleBtn.Size = UDim2.new(0, 45, 0, 45)
 ToggleBtn.Position = UDim2.new(0, 15, 0, 15)
@@ -30,7 +30,7 @@ ToggleBtn.TextSize = 25
 Instance.new("UICorner", ToggleBtn)
 applyNeon(ToggleBtn)
 
--- Painel Principal
+-- Painel MatsuHub
 MainFrame.Parent = ScreenGui
 MainFrame.Size = UDim2.new(0, 260, 0, 320)
 MainFrame.Position = UDim2.new(0.5, -130, 0.5, -160)
@@ -41,7 +41,7 @@ MainFrame.Draggable = true
 Instance.new("UICorner", MainFrame)
 applyNeon(MainFrame)
 
--- Título
+-- Título (MatsuHub)
 Header.Parent = MainFrame
 Header.Size = UDim2.new(1, 0, 0, 50)
 Header.BackgroundTransparency = 1
@@ -64,7 +64,7 @@ local function createBtn(t, p, f)
     b.MouseButton1Click:Connect(f)
 end
 
--- Botão Parar
+-- Botão PARAR (Invisível até o final)
 ActionBtn.Parent = MainFrame
 ActionBtn.Size = UDim2.new(0.9, 0, 0, 50)
 ActionBtn.Position = UDim2.new(0.05, 0, 0.8, 0)
@@ -127,6 +127,7 @@ end
 
 ActionBtn.MouseButton1Click:Connect(stopAll)
 
+-- BOTÕES SEM NÚMEROS (DO JEITO QUE VOCÊ QUERIA)
 createBtn("AUTO FARM DE BARCO", UDim2.new(0.05, 0, 0.2, 0), function() startFarm(200) end)
 createBtn("AUTO FARM (NORMAL)", UDim2.new(0.05, 0, 0.4, 0), function() startFarm(250) end)
 createBtn("AUTO FARM (TURBO)", UDim2.new(0.05, 0, 0.6, 0), function() startFarm(400) end)

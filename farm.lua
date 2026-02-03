@@ -1,4 +1,4 @@
--- [[ MATSUHUB BUILD BOAT - FINAL FORCE ]] --
+-- [[ MATSUHUB BUILD BOAT - CLEAN VERSION ]] --
 if game.PlaceId ~= 537413528 then return end
 
 local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
@@ -17,24 +17,24 @@ local function applyNeon(p)
     s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 end
 
--- Botão M
+-- Botão M (Menu)
 ToggleBtn.Size, ToggleBtn.Position = UDim2.new(0, 45, 0, 45), UDim2.new(0, 15, 0, 15)
 ToggleBtn.BackgroundColor3, ToggleBtn.Text = BLACK, "M"
 ToggleBtn.TextColor3, ToggleBtn.Font, ToggleBtn.TextSize = WHITE, Enum.Font.GothamBold, 25
 Instance.new("UICorner", ToggleBtn); applyNeon(ToggleBtn)
 
--- Menu
-MainFrame.Size, MainFrame.Position = UDim2.new(0, 260, 0, 250), UDim2.new(0.5, -130, 0.5, -125)
+-- Painel Principal (Ajustado para 2 botões)
+MainFrame.Size, MainFrame.Position = UDim2.new(0, 260, 0, 200), UDim2.new(0.5, -130, 0.5, -100)
 MainFrame.BackgroundColor3, MainFrame.Visible = BLACK, true
 MainFrame.Active, MainFrame.Draggable = true, true
 Instance.new("UICorner", MainFrame); applyNeon(MainFrame)
 
--- Título (Fonte Branca como pediu)
+-- Título
 Header.Parent, Header.Size = MainFrame, UDim2.new(1, 0, 0, 50)
 Header.BackgroundTransparency, Header.Text = 1, "MATSUHUB BUILD BOAT"
 Header.TextColor3, Header.Font, Header.TextSize = WHITE, Enum.Font.GothamBold, 17
 
--- Botão Parar Auto Farm (Lógica de Congelamento)
+-- Botão Parar Auto Farm (Aparece ao travar)
 StopBtn.Size, StopBtn.Position = UDim2.new(0, 180, 0, 50), UDim2.new(0.5, -90, 0.7, 0)
 StopBtn.BackgroundColor3, StopBtn.Text = BLACK, "Parar Auto Farm"
 StopBtn.TextColor3, StopBtn.Font, StopBtn.TextSize = WHITE, Enum.Font.GothamBold, 16
@@ -71,7 +71,7 @@ end
 
 StopBtn.MouseButton1Click:Connect(stopAll)
 
-local function startFarm(speed, mode)
+local function startFarm(speed)
     local char = lp.Character or lp.CharacterAdded:Wait()
     local root = char:WaitForChild("HumanoidRootPart")
     stopAll()
@@ -81,20 +81,12 @@ local function startFarm(speed, mode)
         while flying and root.Parent do
             toggleNoclip(true)
             local currentPos = root.Position
-            local targetY = 35
+            local targetY = 35 -- Voo estável acima de obstáculos
             
-            -- FORÇA A DESCIDA POR TELEPORTE (CFrame)
-            if mode == "Boat" and currentPos.Z >= 9410 and currentPos.Z < 9485 then
-                targetY = -35 -- Altura dos espinhos
-            end
-
-            -- CHEGADA NO TESOURO
             if currentPos.Z >= 9485 then
-                root.CFrame = CFrame.new(-106, -35, currentPos.Z)
+                root.CFrame = CFrame.new(-106, targetY, currentPos.Z)
                 StopBtn.Visible = true
-                -- Para o movimento mas mantém o noclip
             else
-                -- Move o boneco setando o CFrame (Ignora física)
                 local nextZ = currentPos.Z + (speed * task.wait())
                 root.CFrame = CFrame.new(-106, targetY, nextZ)
                 StopBtn.Visible = false
@@ -103,6 +95,6 @@ local function startFarm(speed, mode)
     end)
 end
 
-createBtn("AUTO FARM DE BARCO", UDim2.new(0.05, 0, 0.25, 0), function() startFarm(150, "Boat") end)
-createBtn("AUTO FARM (NORMAL)", UDim2.new(0.05, 0, 0.45, 0), function() startFarm(200, "Normal") end)
-createBtn("AUTO FARM (TURBO)", UDim2.new(0.05, 0, 0.65, 0), function() startFarm(350, "Normal") end)
+-- Botões Remanescentes (Sem números nos nomes)
+createBtn("AUTO FARM (NORMAL)", UDim2.new(0.05, 0, 0.35, 0), function() startFarm(200) end)
+createBtn("AUTO FARM (TURBO)", UDim2.new(0.05, 0, 0.65, 0), function() startFarm(350) end)

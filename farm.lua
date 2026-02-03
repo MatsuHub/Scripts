@@ -1,4 +1,4 @@
--- [[ MATSUHUB BUILD BOAT - VERSÃO LIMPA ]] --
+-- [[ MATSUHUB BUILD BOAT - ANTI-DANO ]] --
 if game.PlaceId ~= 537413528 then return end
 
 local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
@@ -23,18 +23,18 @@ ToggleBtn.BackgroundColor3, ToggleBtn.Text = BLACK, "M"
 ToggleBtn.TextColor3, ToggleBtn.Font, ToggleBtn.TextSize = WHITE, Enum.Font.GothamBold, 25
 Instance.new("UICorner", ToggleBtn); applyNeon(ToggleBtn)
 
--- Painel (Encurtado para 2 botões)
+-- Painel
 MainFrame.Size, MainFrame.Position = UDim2.new(0, 260, 0, 190), UDim2.new(0.5, -130, 0.5, -95)
 MainFrame.BackgroundColor3, MainFrame.Visible = BLACK, true
 MainFrame.Active, MainFrame.Draggable = true, true
 Instance.new("UICorner", MainFrame); applyNeon(MainFrame)
 
--- Título Branco
+-- Título
 Header.Parent, Header.Size = MainFrame, UDim2.new(1, 0, 0, 50)
 Header.BackgroundTransparency, Header.Text = 1, "MATSUHUB BUILD BOAT"
 Header.TextColor3, Header.Font, Header.TextSize = WHITE, Enum.Font.GothamBold, 17
 
--- Botão Parar Auto Farm (Aparece no final)
+-- Botão Parar Auto Farm
 StopBtn.Size, StopBtn.Position = UDim2.new(0, 180, 0, 50), UDim2.new(0.5, -90, 0.75, 0)
 StopBtn.BackgroundColor3, StopBtn.Text = BLACK, "Parar Auto Farm"
 StopBtn.TextColor3, StopBtn.Font, StopBtn.TextSize = WHITE, Enum.Font.GothamBold, 16
@@ -54,6 +54,20 @@ ToggleBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame
 local lp = game.Players.LocalPlayer
 local flying = false
 
+-- FUNÇÃO GOD MODE (IMPEDE MORTE DURANTE O FARM)
+local function setGodMode(state)
+    local char = lp.Character
+    if char and char:FindFirstChild("Humanoid") then
+        if state then
+            char.Humanoid.MaxHealth = math.huge
+            char.Humanoid.Health = math.huge
+        else
+            char.Humanoid.MaxHealth = 100
+            char.Humanoid.Health = 100
+        end
+    end
+end
+
 local function toggleNoclip(state)
     local char = lp.Character
     if char then
@@ -67,6 +81,7 @@ local function stopAll()
     flying = false
     StopBtn.Visible = false
     toggleNoclip(false)
+    setGodMode(false)
 end
 
 StopBtn.MouseButton1Click:Connect(stopAll)
@@ -76,12 +91,13 @@ local function startFarm(speed)
     local root = char:WaitForChild("HumanoidRootPart")
     stopAll()
     flying = true
+    setGodMode(true) -- Ativa o God Mode
     
     task.spawn(function()
         while flying and root.Parent do
             toggleNoclip(true)
             local currentPos = root.Position
-            local targetY = 35 
+            local targetY = 55 -- Aumentei a altura para evitar detecção de dano
             
             if currentPos.Z >= 9485 then
                 root.CFrame = CFrame.new(-106, targetY, currentPos.Z)
@@ -95,6 +111,5 @@ local function startFarm(speed)
     end)
 end
 
--- APENAS OS DOIS QUE VOCÊ QUERIA
-createBtn("AUTO FARM (NORMAL)", UDim2.new(0.05, 0, 0.35, 0), function() startFarm(200) end)
-createBtn("AUTO FARM (TURBO)", UDim2.new(0.05, 0, 0.65, 0), function() startFarm(350) end)
+createBtn("AUTO FARM (NORMAL)", UDim2.new(0.05, 0, 0.35, 0), function() startFarm(180) end)
+createBtn("AUTO FARM (TURBO)", UDim2.new(0.05, 0, 0.65, 0), function() startFarm(320) end)

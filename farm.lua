@@ -6,38 +6,33 @@ local MainFrame = Instance.new("Frame", ScreenGui)
 local ToggleBtn = Instance.new("TextButton", ScreenGui)
 local ActionBtn = Instance.new("TextButton", MainFrame)
 
--- Estética Neon
-local function applyNeon(p)
-    local s = Instance.new("UIStroke", p)
-    s.Color, s.Thickness = Color3.fromRGB(255, 0, 0), 3
-end
-
--- Botão de Abrir
+-- Botão M (Para abrir/fechar depois)
 ToggleBtn.Size, ToggleBtn.Position = UDim2.new(0, 45, 0, 45), UDim2.new(0, 15, 0, 15)
 ToggleBtn.Text, ToggleBtn.BackgroundColor3 = "M", Color3.fromRGB(0,0,0)
 ToggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
-Instance.new("UICorner", ToggleBtn); applyNeon(ToggleBtn)
+Instance.new("UICorner", ToggleBtn)
 
--- Painel
+-- Painel Principal (Ajustado para já iniciar VISÍVEL)
 MainFrame.Size, MainFrame.Position = UDim2.new(0, 250, 0, 310), UDim2.new(0.5, -125, 0.5, -155)
-MainFrame.BackgroundColor3, MainFrame.Visible = Color3.fromRGB(0,0,0), true
+MainFrame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+MainFrame.Visible = true -- <--- AQUI O ERRO FOI CORRIGIDO
 MainFrame.Active, MainFrame.Draggable = true, true
-Instance.new("UICorner", MainFrame); applyNeon(MainFrame)
+Instance.new("UICorner", MainFrame)
 
 local function createBtn(t, p, f)
     local b = Instance.new("TextButton", MainFrame)
     b.Size, b.Position = UDim2.new(0.85, 0, 0, 40), p
     b.Text, b.BackgroundColor3 = t, Color3.fromRGB(20,20,20)
-    b.TextColor3 = Color3.fromRGB(255,255,255)
-    Instance.new("UICorner", b); applyNeon(b)
+    b.TextColor3 = Color3.fromRGB(255,0,0)
+    Instance.new("UICorner", b)
     b.MouseButton1Click:Connect(f)
 end
 
--- Botão de Parar
+-- Botão PARAR (Aparece só quando trava no baú)
 ActionBtn.Size, ActionBtn.Position = UDim2.new(0.85, 0, 0, 45), UDim2.new(0.075, 0, 0.78, 0)
 ActionBtn.Text, ActionBtn.BackgroundColor3 = "PARAR DE VOAR", Color3.fromRGB(150, 0, 0)
 ActionBtn.TextColor3, ActionBtn.Visible = Color3.fromRGB(255,255,255), false
-Instance.new("UICorner", ActionBtn); applyNeon(ActionBtn)
+Instance.new("UICorner", ActionBtn)
 
 ToggleBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
@@ -67,22 +62,20 @@ local function startFly(s)
     
     task.spawn(function()
         while flying and h.Parent do
-            local posZ = h.Position.Z
-            
-            -- ATRAVESSA PAREDE (Noclip Total)
+            -- NOCLIP ATIVO (Atravessa a parede da foto)
             for _, part in pairs(char:GetDescendants()) do
                 if part:IsA("BasePart") then part.CanCollide = false end
             end
 
-            -- CHEGADA NO BAÚ (9480 é a areia)
+            local posZ = h.Position.Z
+            -- CONGELA NO BAÚ
             if posZ >= 9480 then
-                bv.Velocity = Vector3.new(0,0,0) -- Congela
+                bv.Velocity = Vector3.new(0,0,0)
                 ActionBtn.Visible = true
             else
                 bv.Velocity = (Vector3.new(-106, 35, posZ + 100) - h.Position).Unit * s
                 ActionBtn.Visible = false
             end
-            
             bg.CFrame = CFrame.new(h.Position, Vector3.new(-106, h.Position.Y, h.Position.Z + 100))
             task.wait()
         end

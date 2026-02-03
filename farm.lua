@@ -14,12 +14,12 @@ local function applyNeon(p)
     s.Color, s.Thickness, s.ApplyStrokeMode = NEON_RED, 3, Enum.ApplyStrokeMode.Border
 end
 
--- Botão M (Sempre visível para abrir/fechar)
+-- Botão M (Menu)
 ToggleBtn.Size, ToggleBtn.Position, ToggleBtn.BackgroundColor3 = UDim2.new(0, 45, 0, 45), UDim2.new(0, 15, 0, 15), PRETO
 ToggleBtn.Text, ToggleBtn.TextColor3, ToggleBtn.Font, ToggleBtn.TextSize = "M", BRANCO, Enum.Font.GothamBold, 20
 Instance.new("UICorner", ToggleBtn); applyNeon(ToggleBtn)
 
--- Painel Principal
+-- Painel
 MainFrame.Size, MainFrame.Position, MainFrame.BackgroundColor3 = UDim2.new(0, 250, 0, 310), UDim2.new(0.5, -125, 0.5, -155), PRETO
 MainFrame.Active, MainFrame.Draggable = true, true
 Instance.new("UICorner", MainFrame); applyNeon(MainFrame)
@@ -36,8 +36,7 @@ local function createBtn(t, p, f)
     b.MouseButton1Click:Connect(f)
 end
 
--- Botão de Ação Especial (DESCER / PARAR)
-ActionBtn.Size, ActionBtn.Position, ActionBtn.BackgroundColor3 = UDim2.new(0.85, 0, 0, 45), UDim2.new(0.075, 0, 0.78, 0), Color3.fromRGB(30,30,30)
+ActionBtn.Size, ActionBtn.Position, ActionBtn.BackgroundColor3 = UDim2.new(0.85, 0, 0, 45), UDim2.new(0.075, 0, 0.78, 0), PRETO
 ActionBtn.Text, ActionBtn.TextColor3, ActionBtn.Font, ActionBtn.TextSize = "", BRANCO, Enum.Font.GothamBold, 12
 ActionBtn.Visible = false
 Instance.new("UICorner", ActionBtn); applyNeon(ActionBtn)
@@ -71,21 +70,21 @@ local function startFly(s)
         while flying and h.Parent do
             local posZ = h.Position.Z
             
-            -- Lógica da Cachoeira (TRAVA AQUI)
-            if posZ > 9410 and posZ < 9485 and not jaDesceu then
-                bv.Velocity = Vector3.new(0,0,0) -- Para o boneco
+            -- PARADA 1: LOGO APÓS A CACHOEIRA (Perto dos espinhos)
+            if posZ > 9420 and posZ < 9480 and not jaDesceu then
+                bv.Velocity = Vector3.new(0,0,0) -- Congela
                 ActionBtn.Text = "DESCER"
                 ActionBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
                 ActionBtn.Visible = true
             
-            -- Lógica da Areia (TRAVA AQUI)
+            -- PARAR 2: CHEGANDO NA AREIA
             elseif posZ >= 9485 then
-                bv.Velocity = Vector3.new(0,0,0) -- Para o boneco
+                bv.Velocity = Vector3.new(0,0,0) -- Congela
                 ActionBtn.Text = "PARAR DE VOAR"
                 ActionBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
                 ActionBtn.Visible = true
             
-            -- Voo normal
+            -- VOO NORMAL
             else
                 bv.Velocity = (Vector3.new(-106, 35, posZ + 100) - h.Position).Unit * s
                 ActionBtn.Visible = false
@@ -97,12 +96,11 @@ local function startFly(s)
 end
 
 ActionBtn.MouseButton1Click:Connect(function()
-    local char = lp.Character
-    local h = char and char:FindFirstChild("HumanoidRootPart")
+    local h = lp.Character:FindFirstChild("HumanoidRootPart")
     if not h then return end
 
     if ActionBtn.Text == "DESCER" then
-        h.CFrame = CFrame.new(-106, -18, h.Position.Z) -- Teleporte para os espinhos
+        h.CFrame = CFrame.new(-106, -18, h.Position.Z) -- Teleporte para o espinho
         jaDesceu = true
         ActionBtn.Visible = false
     elseif ActionBtn.Text == "PARAR DE VOAR" then
@@ -110,7 +108,6 @@ ActionBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- NOMES NOVOS PARA NÃO CONFUNDIR COM O CACHE ANTIGO
 createBtn("AUTO FARM DE BARCO", UDim2.new(0.075, 0, 0.20, 0), function() startFly(200) end)
 createBtn("AUTO FARM (NORMAL)", UDim2.new(0.075, 0, 0.38, 0), function() startFly(250) end)
 createBtn("AUTO FARM (TURBO)", UDim2.new(0.075, 0, 0.56, 0), function() startFly(400) end)

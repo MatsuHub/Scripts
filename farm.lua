@@ -1,6 +1,5 @@
--- MatsuHub - Build A Boat
+-- [[ MatsuHub Oficial ]] --
 if game.PlaceId ~= 537413528 then 
-    warn("MatsuHub: Este script só funciona no 'Construa um Barco'!")
     return 
 end
 
@@ -20,7 +19,7 @@ local function applyNeon(p)
     s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 end
 
--- Botão de Abrir/Fechar (M)
+-- Botão Flutuante (M)
 ToggleBtn.Size = UDim2.new(0, 45, 0, 45)
 ToggleBtn.Position = UDim2.new(0, 15, 0, 15)
 ToggleBtn.BackgroundColor3 = PRETO
@@ -31,7 +30,7 @@ ToggleBtn.TextSize = 20
 Instance.new("UICorner", ToggleBtn)
 applyNeon(ToggleBtn)
 
--- Painel Principal
+-- Painel
 MainFrame.Size = UDim2.new(0, 250, 0, 270)
 MainFrame.Position = UDim2.new(0.5, -125, 0.5, -135)
 MainFrame.BackgroundColor3 = PRETO
@@ -40,7 +39,7 @@ MainFrame.Draggable = true
 Instance.new("UICorner", MainFrame)
 applyNeon(MainFrame)
 
--- Título
+-- Título MatsuHub
 Header.Size = UDim2.new(1, 0, 0, 50)
 Header.BackgroundColor3 = PRETO
 Header.Text = "MATSUHUB BUILD BOAT"
@@ -86,10 +85,8 @@ local function startFly(s)
             end
         end
     end)
-    bv = Instance.new("BodyVelocity", h)
-    bg = Instance.new("BodyGyro", h)
-    bv.MaxForce = Vector3.one * 1e6
-    bg.MaxTorque = Vector3.one * 1e6
+    bv, bg = Instance.new("BodyVelocity", h), Instance.new("BodyGyro", h)
+    bv.MaxForce, bg.MaxTorque = Vector3.one * 1e6, Vector3.one * 1e6
     flying = true
     task.spawn(function()
         local y = 35

@@ -1,4 +1,4 @@
--- [[ MATSUHUB OFFICIAL - BUILD A BOAT ]] --
+-- [[ MATSUHUB BUILD BOAT ]] --
 if game.PlaceId ~= 537413528 then return end
 
 local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
@@ -20,7 +20,7 @@ local function applyNeon(p)
     s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 end
 
--- Configuração do Botão M
+-- Botão M
 ToggleBtn.Size, ToggleBtn.Position = UDim2.new(0, 45, 0, 45), UDim2.new(0, 15, 0, 15)
 ToggleBtn.BackgroundColor3 = BLACK
 ToggleBtn.Text, ToggleBtn.TextColor3 = "M", WHITE
@@ -28,22 +28,22 @@ ToggleBtn.Font, ToggleBtn.TextSize = Enum.Font.GothamBold, 25
 Instance.new("UICorner", ToggleBtn)
 applyNeon(ToggleBtn)
 
--- Painel Principal MatsuHub
+-- Painel Principal
 MainFrame.Size, MainFrame.Position = UDim2.new(0, 260, 0, 250), UDim2.new(0.5, -130, 0.5, -125)
 MainFrame.BackgroundColor3, MainFrame.Visible = BLACK, true
 MainFrame.Active, MainFrame.Draggable = true, true
 Instance.new("UICorner", MainFrame)
 applyNeon(MainFrame)
 
--- Título
+-- Título (Agora MatsuHub Build Boat em Branco)
 Header.Parent = MainFrame
 Header.Size, Header.BackgroundTransparency = UDim2.new(1, 0, 0, 50), 1
-Header.Text, Header.TextColor3 = "MATSUHUB OFFICIAL", RED
-Header.Font, Header.TextSize = Enum.Font.GothamBold, 18
+Header.Text, Header.TextColor3 = "MATSUHUB BUILD BOAT", WHITE
+Header.Font, Header.TextSize = Enum.Font.GothamBold, 17
 
--- Botão Parar Auto Farm ( GothamBold + Neon )
+-- Botão Parar Auto Farm
 StopBtn.Size = UDim2.new(0, 180, 0, 50)
-StopBtn.Position = UDim2.new(0.5, -90, 0.7, 0) -- Centralizado na parte inferior
+StopBtn.Position = UDim2.new(0.5, -90, 0.7, 0)
 StopBtn.BackgroundColor3 = BLACK
 StopBtn.Text = "Parar Auto Farm"
 StopBtn.TextColor3 = WHITE
@@ -102,11 +102,11 @@ local function startFarm(speed)
             toggleNoclip(true) 
             local z = root.Position.Z
             
-            -- Lógica de Congelamento (Cachoeira ou Baú)
-            if z >= 9410 then -- A partir daqui ele começa a monitorar o "trava"
+            -- Detecta parada/congelamento
+            if z >= 9410 then
                 if z >= 9480 or (root.Velocity.Magnitude < 1) then
                     bv.Velocity = Vector3.zero
-                    StopBtn.Visible = true -- SÓ APARECE QUANDO CONGELA
+                    StopBtn.Visible = true
                 else
                     bv.Velocity = (Vector3.new(-106, 35, z + 100) - root.Position).Unit * speed
                     StopBtn.Visible = false

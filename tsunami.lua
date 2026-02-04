@@ -1,4 +1,4 @@
--- [[ MATSUHUB - FUJA DO TSUNAMI AUTO SECRET ]] --
+-- [[ MATSUHUB - FUJA DO TSUNAMI SUPREMO ]] --
 local player = game.Players.LocalPlayer
 local sgui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 local MainFrame = Instance.new("Frame", sgui)
@@ -25,7 +25,7 @@ Instance.new("UICorner", MainFrame); applyNeon(MainFrame)
 
 -- Título
 Header.Parent, Header.Size = MainFrame, UDim2.new(1, 0, 0, 50)
-Header.BackgroundTransparency, Header.Text = 1, "MATSUHUB TSUNAMI"
+Header.BackgroundTransparency, Header.Text = 1, "MATSUHUB SUPREMO"
 Header.TextColor3, Header.Font, Header.TextSize = WHITE, Enum.Font.GothamBold, 17
 
 local function createBtn(t, pos, f)
@@ -39,7 +39,7 @@ end
 
 ToggleBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
--- Botão VIP
+-- BOTÃO LIBERAR VIPS
 createBtn("Liberar Vips", UDim2.new(0.05, 0, 0.35, 0), function(b)
     b.Text, b.TextColor3 = "LIBERADO!", RED
     task.spawn(function()
@@ -54,38 +54,47 @@ createBtn("Liberar Vips", UDim2.new(0.05, 0, 0.35, 0), function(b)
     end)
 end)
 
--- Botão AUTO SECRET
-createBtn("AUTO SECRET", UDim2.new(0.05, 0, 0.65, 0), function(b)
+-- BOTÃO SUPREMO SECRET (Noclip + Voo + God)
+createBtn("SUPREMO SECRET", UDim2.new(0.05, 0, 0.65, 0), function(b)
     b.Text, b.TextColor3 = "ATIVO!", RED
     
     task.spawn(function()
         local char = player.Character
-        local hrp = char:FindFirstChild("HumanoidRootPart")
-        
-        if hrp then
-            -- 1. Voa para o alto para sair do mapa
-            hrp.CFrame = hrp.CFrame * CFrame.new(0, 50, 0)
-            task.wait(0.2)
-            
-            -- 2. Busca o local do segredo (Secret/Egg/Badge)
-            local secretPos = nil
-            for _, v in pairs(workspace:GetDescendants()) do
-                if v:IsA("BasePart") and (v.Name:lower():find("secret") or v.Name:lower():find("badge") or v.Name:lower():find("egg")) then
-                    secretPos = v.CFrame
-                    break
-                end
+        local hrp = char:WaitForChild("HumanoidRootPart")
+        local hum = char:WaitForChild("Humanoid")
+
+        -- Ativa God Mode e Noclip
+        local connection
+        connection = game:GetService("RunService").Stepped:Connect(function()
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then part.CanCollide = false end
             end
-            
-            -- 3. Se não achar por nome, vai para uma coordenada comum de secretos desse mapa
-            if not secretPos then
-                secretPos = CFrame.new(500, 100, 500) -- Coordenada reserva
+            hum.MaxHealth = math.huge
+            hum.Health = math.huge
+        end)
+
+        -- 1. Sobe e vai para a esquerda (fora do mapa)
+        hrp.CFrame = hrp.CFrame * CFrame.new(-50, 60, 0)
+        task.wait(0.5)
+
+        -- 2. Busca o destino final
+        local targetPos = nil
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("BasePart") and (v.Name:lower():find("secret") or v.Name:lower():find("win")) then
+                targetPos = v.CFrame
+                break
             end
-            
-            -- 4. Teleporte suave para o buraco secreto
-            hrp.CFrame = secretPos + Vector3.new(0, 5, 0)
         end
-        
-        task.wait(1)
-        b.Text, b.TextColor3 = "AUTO SECRET", WHITE
+
+        -- 3. Voa direto para o alvo por fora
+        if targetPos then
+            hrp.CFrame = targetPos + Vector3.new(0, 5, 0)
+        else
+            hrp.CFrame = CFrame.new(600, 120, 600) -- Coordenada de segurança
+        end
+
+        task.wait(2)
+        connection:Disconnect() -- Desativa noclip após chegar
+        b.Text, b.TextColor3 = "SUPREMO SECRET", WHITE
     end)
 end)

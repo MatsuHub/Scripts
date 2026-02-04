@@ -1,16 +1,32 @@
--- [[ MATSUHUB TSUNAMI - STEAL A BRAINROT COM POSIÇÃO SALVA ]] --
+-- [[ MATSUHUB TSUNAMI - BRAINROT FLY EDITION ]] --
 local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local root = character:WaitForChild("HumanoidRootPart")
+
 local sgui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-sgui.Name = "MatsuHubBrainrot"
+sgui.Name = "MatsuHubBrainrotV3"
 
 local BLUE = Color3.fromRGB(0, 85, 255)
 local DARK_BLUE = Color3.fromRGB(0, 40, 120)
 local WHITE = Color3.fromRGB(255, 255, 255)
 
+-- Botão de Abrir/Fechar (M)
+local ToggleBtn = Instance.new("TextButton", sgui)
+ToggleBtn.Size = UDim2.new(0, 40, 0, 40)
+ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
+ToggleBtn.BackgroundColor3 = BLUE
+ToggleBtn.Text = "M"
+ToggleBtn.TextColor3 = WHITE
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.TextSize = 20
+Instance.new("UICorner", ToggleBtn)
+
+-- Painel Principal
 local MainFrame = Instance.new("Frame", sgui)
 MainFrame.Size = UDim2.new(0, 260, 0, 260)
 MainFrame.Position = UDim2.new(0.5, -130, 0.5, -130)
 MainFrame.BackgroundColor3 = BLUE
+MainFrame.Visible = true
 Instance.new("UICorner", MainFrame)
 
 local Header = Instance.new("TextLabel", MainFrame)
@@ -28,47 +44,57 @@ local function createBtn(t, pos, f)
     b.MouseButton1Click:Connect(function() f(b) end)
 end
 
--- VARIÁVEL PARA GUARDAR A POSIÇÃO
-local SavedCFrame = nil
+-- Lógica de Voo e Localização
+local SavedPos = nil
 
--- 1. SALVAR LOCALIZAÇÃO (Fique na base e clique aqui)
-createBtn("Salvar Localização", UDim2.new(0.05, 0, 0.22, 0), function(b)
+-- 1. SALVAR LOCALIZAÇÃO
+createBtn("Salvar Localização (Na Base)", UDim2.new(0.05, 0, 0.22, 0), function(b)
     if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        SavedCFrame = player.Character.HumanoidRootPart.CFrame
-        b.Text = "LOCAL SALVO! ✅"
+        SavedPos = player.Character.HumanoidRootPart.Position
+        b.Text = "BASE SALVA! ✅"
         task.wait(1)
         b.Text = "Salvar Localização"
     end
 end)
 
--- 2. TELEPORT (Volta para o local salvo)
-createBtn("Teleport", UDim2.new(0.05, 0, 0.45, 0), function(b)
-    if SavedCFrame then
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            player.Character.HumanoidRootPart.CFrame = SavedCFrame
-            b.Text = "TELEPORTADO! 🚀"
-            task.wait(0.5)
-            b.Text = "Teleport"
-        end
-    else
-        b.Text = "SALVE UM LOCAL PRIMEIRO!"
+-- 2. VOAR PARA BASE (Ao segurar Brainrot)
+createBtn("Voar para Base", UDim2.new(0.05, 0, 0.45, 0), function(b)
+    if SavedPos and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local char = player.Character
+        local hrp = char.HumanoidRootPart
+        
+        b.Text = "VOANDO..."
+        
+        -- Cria o efeito de voo/deslize até a base
+        local tweenService = game:GetService("TweenService")
+        local info = TweenInfo.new(2, Enum.EasingStyle.Linear) -- 2 segundos de voo
+        local tween = tweenService:Create(hrp, info, {CFrame = CFrame.new(SavedPos + Vector3.new(0, 3, 0))})
+        
+        tween:Play()
+        tween.Completed:Wait()
+        
+        b.Text = "CHEGOU! 🚀"
         task.wait(1)
-        b.Text = "Teleport"
+        b.Text = "Voar para Base"
+    else
+        b.Text = "ERRO: SEM BASE SALVA"
+        task.wait(1)
+        b.Text = "Voar para Base"
     end
 end)
 
--- 3. AUTO COLLECT ITEMS
+-- 3. AUTO COLLECT
 createBtn("Auto Collect Items", UDim2.new(0.05, 0, 0.68, 0), function(b)
-    _G.CollectBrainrot = not _G.CollectBrainrot
-    b.Text = _G.CollectBrainrot and "COLLECT: ON" or "Auto Collect Items"
+    _G.CollectBR = not _G.CollectBR
+    b.Text = _G.CollectBR and "COLLECT: ON" or "Auto Collect Items"
     task.spawn(function()
-        while _G.CollectBrainrot do
+        while _G.CollectBR do
             pcall(function()
                 for _, v in pairs(workspace:GetChildren()) do
                     if v:IsA("Tool") or v:FindFirstChild("Handle") then
                         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                            firetouchinterest(player.Character.HumanoidRootPart, v.Handle, 0)
-                            firetouchinterest(player.Character.HumanoidRootPart, v.Handle, 1)
+                            firetouchinterest(player.Character.HumanoidRootPart, v:FindFirstChild("Handle") or v, 0)
+                            firetouchinterest(player.Character.HumanoidRootPart, v:FindFirstChild("Handle") or v, 1)
                         end
                     end
                 end
@@ -78,4 +104,7 @@ createBtn("Auto Collect Items", UDim2.new(0.05, 0, 0.68, 0), function(b)
     end)
 end)
 
--- Botão para fechar/abrir o menu continua funcionando
+-- Abrir/Fechar
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)

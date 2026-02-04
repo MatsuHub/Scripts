@@ -1,59 +1,42 @@
--- [[ MATSUHUB TSUNAMI - BLUE EDITION ]] --
+-- [[ MATSUHUB TSUNAMI - NO-FRAME EDITION ]] --
 local player = game.Players.LocalPlayer
 local sgui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-sgui.Name = "MatsuHubBlue"
+sgui.Name = "MatsuHubNoFrame"
 
-local MainFrame = Instance.new("Frame", sgui)
-local Header = Instance.new("TextLabel", MainFrame)
+-- Botão M (Para fechar/abrir os botões)
 local ToggleBtn = Instance.new("TextButton", sgui)
-
--- Definição de Cores: TUDO AZUL
-local BLUE = Color3.fromRGB(0, 85, 255)
-local DARK_BLUE = Color3.fromRGB(0, 40, 120)
-local WHITE = Color3.fromRGB(255, 255, 255)
-
-local function applyNeon(p)
-    local s = Instance.new("UIStroke", p)
-    s.Color, s.Thickness, s.ApplyStrokeMode = WHITE, 2, Enum.ApplyStrokeMode.Border
-end
-
--- Botão M (Azul com fonte Branca)
 ToggleBtn.Size, ToggleBtn.Position = UDim2.new(0, 45, 0, 45), UDim2.new(0, 15, 0, 60)
-ToggleBtn.BackgroundColor3, ToggleBtn.Text = BLUE, "M"
-ToggleBtn.TextColor3, ToggleBtn.Font, ToggleBtn.TextSize = WHITE, Enum.Font.GothamBold, 25
-ToggleBtn.ZIndex = 100
-Instance.new("UICorner", ToggleBtn); applyNeon(ToggleBtn)
+ToggleBtn.BackgroundColor3, ToggleBtn.Text = Color3.fromRGB(0, 85, 255), "M"
+ToggleBtn.TextColor3, ToggleBtn.Font, ToggleBtn.TextSize = Color3.fromRGB(255, 255, 255), Enum.Font.GothamBold, 25
+Instance.new("UICorner", ToggleBtn)
 
--- Painel Principal (Azul sólido para matar o cinza)
-MainFrame.Size, MainFrame.Position = UDim2.new(0, 260, 0, 180), UDim2.new(0.5, -130, 0.5, -90)
-MainFrame.BackgroundColor3 = BLUE
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Draggable = true -- Agora você pode arrastar se quiser
-MainFrame.Visible = true
-MainFrame.ZIndex = 5
-Instance.new("UICorner", MainFrame); applyNeon(MainFrame)
-
--- Título
-Header.Parent, Header.Size = MainFrame, UDim2.new(1, 0, 0, 50)
-Header.BackgroundTransparency = 1
-Header.Text = "MatsuHub Tsunami"
-Header.TextColor3, Header.Font, Header.TextSize = WHITE, Enum.Font.GothamBold, 18
-Header.ZIndex = 6
+-- Container Invisível
+local Holder = Instance.new("Frame", sgui)
+Holder.Size, Holder.Position = UDim2.new(0, 260, 0, 150), UDim2.new(0.5, -130, 0.5, -75)
+Holder.BackgroundTransparency = 1 -- TOTALMENTE INVISÍVEL
+Holder.Visible = true
 
 local function createBtn(t, pos, f)
-    local b = Instance.new("TextButton", MainFrame)
-    b.Size, b.Position = UDim2.new(0.9, 0, 0, 45), pos
-    b.BackgroundColor3, b.Text = DARK_BLUE, t
-    b.TextColor3, b.Font, b.TextSize = WHITE, Enum.Font.GothamBold, 14
-    b.ZIndex = 7
-    Instance.new("UICorner", b); applyNeon(b)
+    local b = Instance.new("TextButton", Holder)
+    b.Size, b.Position = UDim2.new(0.9, 0, 0, 50), pos
+    b.BackgroundColor3 = Color3.fromRGB(0, 85, 255)
+    b.Text, b.TextColor3 = t, Color3.fromRGB(255, 255, 255)
+    b.Font, b.TextSize = Enum.Font.GothamBold, 16
+    Instance.new("UICorner", b)
+    local s = Instance.new("UIStroke", b)
+    s.Color, s.Thickness = Color3.fromRGB(255, 255, 255), 2
     b.MouseButton1Click:Connect(function() f(b) end)
 end
 
--- 1. LIBERAR VIPS
-createBtn("Liberar Vips", UDim2.new(0.05, 0, 0.35, 0), function(b)
-    b.Text = "VIP ATIVADO"
+-- Título Flutuante
+local Title = Instance.new("TextLabel", Holder)
+Title.Size, Title.Position = UDim2.new(1, 0, 0, 40), UDim2.new(0, 0, -0.3, 0)
+Title.BackgroundTransparency, Title.Text = 1, "MATSUHUB TSUNAMI"
+Title.TextColor3, Title.Font, Title.TextSize = Color3.fromRGB(0, 85, 255), Enum.Font.GothamBold, 20
+
+-- Funções
+createBtn("Liberar Vips", UDim2.new(0.05, 0, 0.1, 0), function(b)
+    b.Text = "VIP ATIVO"
     task.spawn(function()
         while true do
             for _, v in pairs(workspace:GetDescendants()) do
@@ -66,8 +49,7 @@ createBtn("Liberar Vips", UDim2.new(0.05, 0, 0.35, 0), function(b)
     end)
 end)
 
--- 2. AUTO LUCKY
-createBtn("Auto Lucky", UDim2.new(0.05, 0, 0.65, 0), function(b)
+createBtn("Auto Lucky", UDim2.new(0.05, 0, 0.6, 0), function(b)
     b.Text = "LUCKY ATIVO"
     task.spawn(function()
         while true do
@@ -85,4 +67,4 @@ createBtn("Auto Lucky", UDim2.new(0.05, 0, 0.65, 0), function(b)
     end)
 end)
 
-ToggleBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
+ToggleBtn.MouseButton1Click:Connect(function() Holder.Visible = not Holder.Visible end)

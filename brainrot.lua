@@ -1,8 +1,8 @@
--- [[ MATSUHUB TSUNAMI - BRAINROT FLY EDITION ]] --
+-- [[ MATSUHUB TSUNAMI - BRAINROT FLY V3 ]] --
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
-local root = character:WaitForChild("HumanoidRootPart")
 
+-- Interface
 local sgui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 sgui.Name = "MatsuHubBrainrotV3"
 
@@ -13,12 +13,12 @@ local WHITE = Color3.fromRGB(255, 255, 255)
 -- Botão de Abrir/Fechar (M)
 local ToggleBtn = Instance.new("TextButton", sgui)
 ToggleBtn.Size = UDim2.new(0, 40, 0, 40)
-ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
+ToggleBtn.Position = UDim2.new(0, 15, 0, 15)
 ToggleBtn.BackgroundColor3 = BLUE
 ToggleBtn.Text = "M"
 ToggleBtn.TextColor3 = WHITE
 ToggleBtn.Font = Enum.Font.GothamBold
-ToggleBtn.TextSize = 20
+ToggleBtn.TextSize = 22
 Instance.new("UICorner", ToggleBtn)
 
 -- Painel Principal
@@ -44,40 +44,37 @@ local function createBtn(t, pos, f)
     b.MouseButton1Click:Connect(function() f(b) end)
 end
 
--- Lógica de Voo e Localização
+-- Variável da Base
 local SavedPos = nil
 
 -- 1. SALVAR LOCALIZAÇÃO
-createBtn("Salvar Localização (Na Base)", UDim2.new(0.05, 0, 0.22, 0), function(b)
+createBtn("Salvar Base", UDim2.new(0.05, 0, 0.22, 0), function(b)
     if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
         SavedPos = player.Character.HumanoidRootPart.Position
         b.Text = "BASE SALVA! ✅"
         task.wait(1)
-        b.Text = "Salvar Localização"
+        b.Text = "Salvar Base"
     end
 end)
 
--- 2. VOAR PARA BASE (Ao segurar Brainrot)
+-- 2. VOAR PARA BASE (Suave)
 createBtn("Voar para Base", UDim2.new(0.05, 0, 0.45, 0), function(b)
     if SavedPos and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        local char = player.Character
-        local hrp = char.HumanoidRootPart
-        
+        local hrp = player.Character.HumanoidRootPart
         b.Text = "VOANDO..."
         
-        -- Cria o efeito de voo/deslize até a base
-        local tweenService = game:GetService("TweenService")
-        local info = TweenInfo.new(2, Enum.EasingStyle.Linear) -- 2 segundos de voo
-        local tween = tweenService:Create(hrp, info, {CFrame = CFrame.new(SavedPos + Vector3.new(0, 3, 0))})
+        -- Efeito de deslize (Tween) para não ser banido
+        local ts = game:GetService("TweenService")
+        local info = TweenInfo.new(2, Enum.EasingStyle.Sine)
+        local fly = ts:Create(hrp, info, {CFrame = CFrame.new(SavedPos + Vector3.new(0, 5, 0))})
         
-        tween:Play()
-        tween.Completed:Wait()
-        
-        b.Text = "CHEGOU! 🚀"
+        fly:Play()
+        fly.Completed:Wait()
+        b.Text = "ENTREGUE!"
         task.wait(1)
         b.Text = "Voar para Base"
     else
-        b.Text = "ERRO: SEM BASE SALVA"
+        b.Text = "SALVE A BASE ANTES!"
         task.wait(1)
         b.Text = "Voar para Base"
     end
@@ -104,7 +101,7 @@ createBtn("Auto Collect Items", UDim2.new(0.05, 0, 0.68, 0), function(b)
     end)
 end)
 
--- Abrir/Fechar
+-- Abrir/Fechar Menu
 ToggleBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
 end)

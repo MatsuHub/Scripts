@@ -1,17 +1,17 @@
--- [[ MATSUHUB TSUNAMI - VIP ONLY ]] --
+-- [[ MATSUHUB - VERSÃO VIP DEFINITIVA ]] --
 local player = game.Players.LocalPlayer
 local sgui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-sgui.Name = "MatsuHubVIP"
+sgui.Name = "MatsuHubV5"
 
 local BLUE = Color3.fromRGB(0, 85, 255)
 local BLACK = Color3.fromRGB(15, 15, 15)
 local GOLD = Color3.fromRGB(255, 215, 0)
 local WHITE = Color3.fromRGB(255, 255, 255)
 
--- Botão M (Para esconder o menu)
+-- Botão M (Única forma de abrir/fechar)
 local ToggleBtn = Instance.new("TextButton", sgui)
 ToggleBtn.Size = UDim2.new(0, 45, 0, 45)
-ToggleBtn.Position = UDim2.new(0, 10, 0, 150)
+ToggleBtn.Position = UDim2.new(0, 10, 0, 200) -- Posição fixa para não sumir
 ToggleBtn.BackgroundColor3 = BLUE
 ToggleBtn.Text = "M"
 ToggleBtn.TextColor3 = WHITE
@@ -19,7 +19,7 @@ ToggleBtn.Font = Enum.Font.GothamBold
 ToggleBtn.TextSize = 25
 Instance.new("UICorner", ToggleBtn)
 
--- Painel Principal
+-- Painel Principal (Apenas VIP)
 local MainFrame = Instance.new("Frame", sgui)
 MainFrame.Size = UDim2.new(0, 280, 0, 180)
 MainFrame.Position = UDim2.new(0.5, -140, 0.5, -90)
@@ -37,25 +37,25 @@ Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.BackgroundTransparency = 1
 
--- Função para criar o botão de VIP
-local function createVipBtn(t, pos, color, f)
-    local b = Instance.new("TextButton", MainFrame)
-    b.Size, b.Position = UDim2.new(0.9, 0, 0, 60), pos
-    b.BackgroundColor3, b.Text = color, t
-    b.TextColor3, b.Font, b.TextSize = WHITE, Enum.Font.GothamBold, 16
-    Instance.new("UICorner", b)
-    b.MouseButton1Click:Connect(function() f(b) end)
-end
+-- Botão VIP Unlocked
+local VipBtn = Instance.new("TextButton", MainFrame)
+VipBtn.Size = UDim2.new(0.9, 0, 0, 60)
+VipBtn.Position = UDim2.new(0.05, 0, 0.4, 0)
+VipBtn.BackgroundColor3 = GOLD
+VipBtn.Text = "ATIVAR VIP UNLOCKED"
+VipBtn.TextColor3 = BLACK -- Texto preto no fundo dourado para ler melhor
+VipBtn.Font = Enum.Font.GothamBold
+VipBtn.TextSize = 16
+Instance.new("UICorner", VipBtn)
 
--- BOTAO LIBERAR VIP
-createVipBtn("ATIVAR VIP UNLOCKED", UDim2.new(0.05, 0, 0.4, 0), GOLD, function(b)
-    b.Text = "VIP ATIVO! 👑"
+VipBtn.MouseButton1Click:Connect(function()
+    VipBtn.Text = "VIP ATIVADO! 👑"
     pcall(function()
-        -- Bypass de permissões VIP
+        -- Bypass de permissões VIP do jogo
         if player:FindFirstChild("IsVip") then player.IsVip.Value = true end
         if player:FindFirstChild("VipPass") then player.VipPass.Value = true end
         
-        -- Remove barreiras VIP do mapa
+        -- Libera áreas trancadas
         for _, v in pairs(workspace:GetDescendants()) do
             if v.Name:lower():find("vip") and v:IsA("BasePart") then
                 v.CanCollide = false
@@ -64,10 +64,10 @@ createVipBtn("ATIVAR VIP UNLOCKED", UDim2.new(0.05, 0, 0.4, 0), GOLD, function(b
         end
     end)
     task.wait(2)
-    b.Text = "VIP UNLOCKED ✅"
+    VipBtn.Text = "VIP UNLOCKED ✅"
 end)
 
--- Abrir e Fechar o menu
+-- Sistema de Fechar/Abrir
 ToggleBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
 end)

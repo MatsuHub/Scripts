@@ -1,4 +1,4 @@
--- [[ MATSUHUB - FUJA DO TSUNAMI GOD MODE ]] --
+-- [[ MATSUHUB - FUJA DO TSUNAMI VÁ MAIS UM ]] --
 local player = game.Players.LocalPlayer
 local sgui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 local MainFrame = Instance.new("Frame", sgui)
@@ -18,7 +18,7 @@ ToggleBtn.BackgroundColor3, ToggleBtn.Text = BLACK, "M"
 ToggleBtn.TextColor3, ToggleBtn.Font, ToggleBtn.TextSize = WHITE, Enum.Font.GothamBold, 25
 ToggleBtn.ZIndex = 10; Instance.new("UICorner", ToggleBtn); applyNeon(ToggleBtn)
 
--- Painel (Aumentado para 2 botões)
+-- Painel
 MainFrame.Size, MainFrame.Position = UDim2.new(0, 260, 0, 200), UDim2.new(0.5, -130, 0.5, -100)
 MainFrame.BackgroundColor3, MainFrame.Visible = BLACK, true
 Instance.new("UICorner", MainFrame); applyNeon(MainFrame)
@@ -54,25 +54,27 @@ createBtn("Liberar Vips", UDim2.new(0.05, 0, 0.3, 0), function(b)
     end)
 end)
 
--- BOTÃO GOD MODE (O MÁXIMO!)
-createBtn("God Mode", UDim2.new(0.05, 0, 0.6, 0), function(b)
+-- BOTÃO VÁ MAIS UM (Teleporte por buracos)
+createBtn("Vá mais um", UDim2.new(0.05, 0, 0.6, 0), function(b)
     b.Text, b.TextColor3 = "ATIVO!", RED
     
     task.spawn(function()
-        while true do
-            -- Mantém a vida infinita
-            if player.Character and player.Character:FindFirstChild("Humanoid") then
-                player.Character.Humanoid.MaxHealth = math.huge
-                player.Character.Humanoid.Health = math.huge
+        local points = {}
+        -- Busca os buracos/checkpoints no mapa
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("BasePart") and (v.Name:find("Win") or v.Name:find("Part") or v:FindFirstChild("TouchTransmitter")) then
+                table.insert(points, v)
             end
-            
-            -- Deleta o tsunami se ele chegar perto (Anti-Dano)
-            for _, v in pairs(workspace:GetDescendants()) do
-                if v:IsA("BasePart") and (v.Name:lower():find("tsunami") or v.Name:lower():find("water") or v.Name:lower():find("poop")) then
-                    v.CanTouch = false -- Você não toca mais no tsunami
-                end
-            end
-            task.wait(0.5)
         end
+        
+        -- Teleporta um por um
+        for i, point in ipairs(points) do
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = point.CFrame + Vector3.new(0, 3, 0)
+                task.wait(0.5) -- Tempo para o jogo registrar que você passou
+            end
+        end
+        b.Text = "Vá mais um"
+        b.TextColor3 = WHITE
     end)
 end)
